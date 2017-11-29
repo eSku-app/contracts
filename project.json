@@ -1,0 +1,17 @@
+{
+  "version":"7",
+  "compilation":{
+    "contracts_source_dirs": [
+        "utils",
+        "platform",
+        "ico",
+        "rewards"
+    ]
+  },
+  "Token":{
+    "_symbol":"CTRL",
+    "_name":"ESKU Control Token", 
+    "_decimals":"9",
+    "initialSupply":"500000000"
+  }
+}
