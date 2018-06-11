@@ -1,4 +1,4 @@
-pragma solidity ^0.4.20;
+pragma solidity ^0.4.24;
 
 import "utils/Owned.sol";
 import "utils/ERC20Token.sol";
@@ -16,7 +16,7 @@ contract TokenNoDecimals is Owned, ERC20Token
     mapping(address => mapping (address => uint256)) allowed;
  
     // Constructor
-    function TokenNoDecimals (
+    constructor (
         string _symbol,
         string _name,
         uint256 initialSupply
@@ -130,7 +130,7 @@ contract Token is TokenNoDecimals
 {
     uint8 public decimals;
     
-    function Token (
+    constructor (
         string _symbol, 
         string _name, 
         uint8 _decimals,

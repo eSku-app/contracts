@@ -1,4 +1,4 @@
-pragma solidity ^0.4.20;
+pragma solidity ^0.4.24;
 /*
  * Influenced - Inherited contract that adds influence logging
  *
@@ -67,7 +67,7 @@ contract Influenced is Maintained, Tokenized
     );
     
     // Constructor: set token, set fee
-    function Influenced (
+    constructor (
         address _token,
         uint256 _influenceFee
     )

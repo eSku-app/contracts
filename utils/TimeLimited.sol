@@ -1,4 +1,4 @@
-pragma solidity ^0.4.20;
+pragma solidity ^0.4.24;
 /*
  * TimeLimited - utility contract that allows controlling contract access through
  *               a deadline, and provides modifiers and events for reference.
@@ -24,7 +24,10 @@ contract TimeLimited is Owned
     // @imp 4 Event occurs when deadline passes and owner declares state locked
     event Expired();
 
-    function TimeLimited(uint _duration) public
+    constructor (
+        uint _duration
+    )
+        public
     {
         // @imp 2 set the duration parameter
         duration = _duration;
@@ -72,7 +75,7 @@ contract TimeLimited is Owned
 
 contract TestTimeLimited is TimeLimited
 {
-    function TestTimeLimited (
+    constructor (
         uint _duration
     )
         public

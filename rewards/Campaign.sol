@@ -1,4 +1,4 @@
-pragma solidity ^0.4.20;
+pragma solidity ^0.4.24;
 /*
  * Campaign reward contract - Pay users for a promotional campaign
  *
@@ -44,7 +44,7 @@ contract Campaign is
     // @imp 1, 5 Minimum that must be hit for success
     uint public minimumInfluence;
 
-    function Campaign (
+    constructor (
         address _token,
         uint _duration,
         uint _minimumInfluence

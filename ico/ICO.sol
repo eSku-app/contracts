@@ -1,4 +1,4 @@
-pragma solidity ^0.4.20;
+pragma solidity ^0.4.24;
 
 import "utils/Owned.sol";
 import "utils/Tokenized.sol";
@@ -27,7 +27,7 @@ contract ICO is Owned, Tokenized, TimeLimited
         uint256 refund
     );
     
-    function ICO (
+    constructor (
         uint256 _tokenPrice,
         uint256 _hardCap,
         uint256 _softCap,

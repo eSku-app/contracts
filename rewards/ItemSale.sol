@@ -1,4 +1,4 @@
-pragma solidity ^0.4.20;
+pragma solidity ^0.4.24;
 pragma experimental ABIEncoderV2; // Used for setReward() function
 /*
  * ItemSale reward contract - Reward users for continuous sales promotions
@@ -75,7 +75,7 @@ contract ItemSale is
         uint totalInfluence
     );
 
-    function ItemSale (
+    constructor (
         address _token,
         uint _influenceFee
     )

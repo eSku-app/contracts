@@ -1,4 +1,4 @@
-pragma solidity ^0.4.20;
+pragma solidity ^0.4.24;
 /*
  * Tokenized - utility class for working with ERC20 tokens
  *
@@ -16,7 +16,10 @@ contract Tokenized is Maintained
     ERC20Token public token; //ERC20 Compatible
 
     // @imp 1 Set 'token' at init
-    function Tokenized(address _token) public
+    constructor (
+        address _token
+    )
+        public
     {
         token = ERC20Token(_token);
     }
@@ -76,7 +79,7 @@ contract Tokenized is Maintained
 
 contract TestTokenized is Tokenized
 {
-    function TestTokenized(address _token) public
+    constructor(address _token) public
         Tokenized(_token)
     { }
     
