@@ -29,6 +29,8 @@ contract TimeLimited is Owned
     )
         public
     {
+        // Protect against overflow condition on input arg
+        require(creationTime + _duration > creationTime);
         // @imp 2 set the duration parameter
         duration = _duration;
     }
