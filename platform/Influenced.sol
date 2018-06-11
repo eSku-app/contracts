@@ -1,4 +1,5 @@
 pragma solidity ^0.4.24;
+pragma experimental ABIEncoderV2; // Used for addInfluence() function
 /*
  * Influenced - Inherited contract that adds influence logging
  *
@@ -54,8 +55,8 @@ contract Influenced is Maintained, Tokenized
 
     // @imp 4 Influence updating event
     event AddInfluence(
-        address indexed influencer,
-        uint256 amount
+        address[] indexed influencers,
+        uint256[] indexed amounts
     );
 
     // @imp 5 Fee for maintaining influence (charges the user)
@@ -90,30 +91,36 @@ contract Influenced is Maintained, Tokenized
     }
 
     function addInfluence(
-        uint256 amount,
-        address account
+        uint256[] amounts,
+        address[] accounts
     )
         public
         onlyMaintainer()
     {
-        // Overflow protection and zero _score avoidence
-        // NOTE: influence[_account] <= total_influence,
-        // so we don't need to check that
-        require(totalInfluence + amount > totalInfluence);
-        // @imp 9 Make sure we're within our bounds for precise math
-        require(totalInfluence + amount < PREC_MAX);
-        
-        // @imp 5 Fee paid by influencer to help offset cost of
-        // maintaining list of top influencers
-        tokenTransferFrom(account, maintainer, influenceFee);
-        
-        // @imp 2 Increase user's score
-        influence[account] += amount;
-        // @imp 3 as well as total
-        totalInfluence += amount;
+        // Arrays must be same length
+        require(amounts.length == accounts.length);
+
+        for (uint i = 0; i < amounts.length; i++)
+        {
+            // Overflow protection and zero _score avoidence
+            // NOTE: influence[_account] <= total_influence,
+            // so we don't need to check that
+            require(totalInfluence + amounts[i] > totalInfluence);
+            // @imp 9 Make sure we're within our bounds for precise math
+            require(totalInfluence + amounts[i] < PREC_MAX);
+
+            // @imp 5 Fee paid by influencer to help offset cost of
+            // maintaining list of top influencers
+            tokenTransferFrom(accounts[i], maintainer, influenceFee);
+
+            // @imp 2 Increase user's score
+            influence[accounts[i]] += amounts[i];
+            // @imp 3 as well as total
+            totalInfluence += amounts[i];
+        }
 
         // @imp 4 Feedback event
-        emit AddInfluence(account, amount);
+        emit AddInfluence(accounts, amounts);
     }
 
     // In case someone does something bad

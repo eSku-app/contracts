@@ -1,5 +1,5 @@
 pragma solidity ^0.4.24;
-pragma experimental ABIEncoderV2; // Used for setReward() function
+pragma experimental ABIEncoderV2; // Used for setReward(), addInfluence() functions
 /*
  * ItemSale reward contract - Reward users for continuous sales promotions
  *
@@ -129,16 +129,17 @@ contract ItemSale is
 
     // @imp 7 Precede supercall with update to historical storage
     function addInfluence(
-        uint amount,
-        address account
+        uint256[] amounts,
+        address[] accounts
     )
         public
         onlyMaintainer()
     {
         // Log influence here
-        super.addInfluence(amount, account);
+        super.addInfluence(amounts, accounts);
         // Synchronize with current data (length of array is current)
-        influenceHistory[account][salesStack.length] = influence[account];
+        for (uint i = 0; i < accounts.length; i++)
+            influenceHistory[accounts[i]][salesStack.length] = influence[accounts[i]];
     }
 
     // User runs this periodically to collect their snapshotted rewards
