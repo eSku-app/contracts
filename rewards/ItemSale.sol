@@ -76,12 +76,10 @@ contract ItemSale is
     );
 
     constructor (
-        address _token,
-        uint _influenceFee
+        address _token
     )
         public
         Tokenized(_token)
-        Influenced(_token, _influenceFee)
     { }
     
     // @imp 2 Brand can add/reset Rewards for the sale of a specific SKU

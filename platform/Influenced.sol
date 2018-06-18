@@ -37,9 +37,8 @@ pragma experimental ABIEncoderV2; // Used for addInfluence() function
  *        of their score to the total score, without loss of more than 1e-7%
  */
 import "utils/Maintained.sol";
-import "utils/Tokenized.sol";
 
-contract Influenced is Maintained, Tokenized
+contract Influenced is Maintained
 { 
     // Influencer -> Influence mapping for all accounts
     mapping(address => uint256) public influence;
@@ -59,37 +58,6 @@ contract Influenced is Maintained, Tokenized
         uint256[] indexed amounts
     );
 
-    // @imp 5 Fee for maintaining influence (charges the user)
-    uint256 public influenceFee; // Initial must Must be set by user contract
-    
-    // @imp 7 Broadcast fee change
-    event UpdatedInfluenceFee(
-        uint256 value
-    );
-    
-    // Constructor: set token, set fee
-    constructor (
-        address _token,
-        uint256 _influenceFee
-    )
-        public
-        Tokenized(_token)
-    {
-        influenceFee = _influenceFee;
-    }
-    
-    // @imp 6 Maintainer sets the fee for maintaining influence
-    function setInfluenceFee(
-        uint256 newInfluenceFee
-    )
-        public
-        onlyMaintainer()
-    {
-        influenceFee = newInfluenceFee;
-        // @imp 7 Emit event on fee change
-        emit UpdatedInfluenceFee(influenceFee);
-    }
-
     function addInfluence(
         uint256[] amounts,
         address[] accounts
@@ -108,10 +76,6 @@ contract Influenced is Maintained, Tokenized
             require(totalInfluence + amounts[i] > totalInfluence);
             // @imp 9 Make sure we're within our bounds for precise math
             require(totalInfluence + amounts[i] < PREC_MAX);
-
-            // @imp 5 Fee paid by influencer to help offset cost of
-            // maintaining list of top influencers
-            tokenTransferFrom(accounts[i], maintainer, influenceFee);
 
             // @imp 2 Increase user's score
             influence[accounts[i]] += amounts[i];

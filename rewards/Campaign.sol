@@ -52,7 +52,6 @@ contract Campaign is
         public
         Tokenized(_token)
         TimeLimited(_duration)
-        Influenced(_token, 0) // Start influence fee at 0 tokens
     {
         // @imp 1 Set minimum influence
         minimumInfluence = _minimumInfluence;
