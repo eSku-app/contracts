@@ -110,7 +110,8 @@ contract Influenced is Maintained
         uint256 amount,
         address account
     )
-        public constant
+        public
+        view
         returns (
             uint256
         )
@@ -127,7 +128,7 @@ contract Influenced is Maintained
         uint256 denominator
     )
         internal
-        constant
+        view
         returns (
             uint256
         )
