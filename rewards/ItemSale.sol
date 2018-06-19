@@ -13,19 +13,20 @@ pragma experimental ABIEncoderV2; // Used for setReward(), addInfluence() functi
  * maintainer (eSKU) can remove this countract IFF all users have
  * withdrawn their share of tokens.
  *
- * @req 1 Owner creates contract, it starts unfunded
- * @req 2 Rewards (allocated per SKU) can be set by Owner (starts at 0)
- *        at any time during the contract
- * @req 3 Any reward updates must be communicated through an event
- * @req 4 A sale is only successful if there are tokens to back it
- * @req 5 When a sale is made, a snapshot is taken of the current influence
- *        to be used to determine the distribution ratio of a reward
- * @req 6 A sale must be communicated through an event
- * @req 7 A user's share is determined over each sale by their relative
- *        influence ratio at the time each sale occurs (via snapshot)
- * @req 8 Any user who earned tokens can withdraw their tokens at any time
- * @req 9 The Owner can destroy the contract and return the remaining tokens
- *        if less than 1e-7% of the contract's reward payouts are unclaimed
+ * @req 1  Owner creates contract, it starts unfunded
+ * @req 2  Rewards (allocated per SKU) can be set by Owner (starts at 0)
+ *         at any time during the contract
+ * @req 3  Any reward updates must be communicated through an event
+ * @req 4  A sale is only successful if there are tokens to back it
+ * @req 5  When a sale is made, a snapshot is taken of the current influence
+ *         to be used to determine the distribution ratio of a reward
+ * @req 6  A sale must be communicated through an event
+ * @req 7  A user's share is determined over each sale by their relative
+ *         influence ratio at the time each sale occurs (via snapshot)
+ * @req 8  Any user who earned tokens can withdraw their tokens at any time
+ * @req 9  The Owner can withdraw any unlocked tokens at any time
+ * @req 10 The Owner can destroy the contract and return the remaining tokens
+ *         if less than 1e-7% of the contract's reward payouts are unclaimed
  *
  * NOTE: The Owner can allow the contract to run out by disabling
  *       the sales oracle and not funding it any more
@@ -101,6 +102,17 @@ contract ItemSale is
         emit RewardsAdded(skus, amounts);
     }
 
+    // Helper to obtain number of unlocked tokens
+    function unlockedTokens()
+        public
+        view
+        returns (
+            uint
+        )
+    {
+        return tokenBalanceOf(this)-unclaimed;
+    }
+
     // Maintainer can record the sale of a specific SKU
     function recordSale(
         string sku
@@ -111,9 +123,9 @@ contract ItemSale is
         // Useless to update if no influence is logged
         require(totalInfluence > 0);
 
-        // @imp 4 Must be enough tokens to back reward
+        // @imp 4 Must be enough unlocked tokens to back reward
         uint amount = reward[sku];
-        require(amount <= tokenBalanceOf(this)-unclaimed);
+        require(amount <= unlockedTokens());
         // @imp 8 This locks away Owner from getting these tokens back
         unclaimed += amount;
         
@@ -183,7 +195,17 @@ contract ItemSale is
         return (claimIndex[msg.sender] == salesStack.length);
     }
 
-    // @imp 9 Give the tokens back if we clean this up for whatever reason
+    // @imp 9 Withdraw unlocked tokens at any time
+    function withdrawal()
+        public
+        onlyOwner()
+    {
+        uint unlocked = unlockedTokens();
+        require(unlocked > 0);
+        tokenTransfer(owner, unlocked);
+    }
+
+    // @imp 10 Give the tokens back if we clean this up for whatever reason
     function destroy()
         public
         onlyOwner()
