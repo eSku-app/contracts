@@ -18,7 +18,7 @@ pragma solidity ^0.4.24;
  * @req 4 Any user who earned tokens can withdraw their tokens after
  *        the contract is expired (Owner must finalize expiration)
  * @req 5 The Owner can cancel the contract at any time, as long
- *        as the minimum influence is not hit
+ *        as the minimum influence is not exceeded
  * @req 6 The Owner can destroy the contract after it is expired,
  *        only if all users have taken their rewards
  */
@@ -63,11 +63,14 @@ contract Campaign is
         inProgress()
         onlyOwner()
     {
+        // Hold this in memory
+        uint tokenBalance = tokenBalanceOf(this);
+
         // Starts at 0 at deployment, so brand needs to add tokens to this
         // contract in order to incentivize users to join
         // Also, if they decide to up the ante on the contract, allow them
-        require(tokenBalanceOf(this) > bounty);
-        bounty = tokenBalanceOf(this);
+        require(tokenBalance > bounty);
+        bounty = tokenBalance;
     }
 
     // @imp 4 User can get their reward when contract is over
@@ -86,21 +89,24 @@ contract Campaign is
         tokenTransfer(msg.sender, amount);
     }
 
-   function destroy()
+    function destroy()
         public
         onlyOwner()
-   {
-        // @imp 5 If minimum influence is not hit, return the tokens to the owner
-        if (totalInfluence < minimumInfluence)
+    {
+        // Hold this in memory
+        uint tokenBalance = tokenBalanceOf(this);
+
+        // @imp 5 If minimum influence is not exceeded, return the tokens to the owner
+        if (totalInfluence <= minimumInfluence)
             // This allows the next part to continue
-            tokenTransfer(owner, tokenBalanceOf(this));
+            tokenTransfer(owner, tokenBalance);
 
         // @imp 6 In case there are straggling tokens left (must be less than 1e-7%)
-        require(tokenBalanceOf(this) < bounty / 10**9);
+        require(tokenBalance < bounty / 10**9);
         // NOTE: Remainder (which is very small) is destroyed
         //       This is done to ensure imprecise calculations cannot stop this
 
         // @imp 5,6 Only remove contract if all tokens are claimed
         selfdestruct(owner);
-   }
+    }
 }
