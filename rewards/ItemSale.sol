@@ -43,8 +43,8 @@ contract ItemSale is
     Tokenized,  // with eSKU token
     Influenced  // by eSKU Metrics
 {
-    // @imp 2 SKU string -> Token Reward mappping, everything starts at 0 tokens
-    mapping(string => uint) reward;
+    // @imp 2 SKU bytestring -> Token Reward mappping, everything starts at 0 tokens
+    mapping(bytes32 => uint) reward;
     // @imp 4 Reserved for dispersements, ensures tokens are not removed
     uint public unclaimed = 0;
 
@@ -65,12 +65,12 @@ contract ItemSale is
 
     // @imp 3 New SKU Reward(s) added/updated
     event RewardsAdded(
-        string[] sku,
+        bytes32[] sku,
         uint[] reward
     );
     // @imp 6 Sale Recorded
     event SaleRecorded(
-        string indexed sku,
+        bytes32 indexed sku,
         uint indexed reward,
         uint indexed saleIndex,
         uint totalInfluence
@@ -85,7 +85,7 @@ contract ItemSale is
     
     // @imp 2 Brand can add/reset Rewards for the sale of a specific SKU
     function setReward(
-        string[] skus, 
+        bytes32[] skus,
         uint[] amounts
     )
         public
@@ -115,7 +115,7 @@ contract ItemSale is
 
     // Maintainer can record the sale of a specific SKU
     function recordSale(
-        string sku
+        bytes32 sku
     )
         public
         onlyMaintainer()
