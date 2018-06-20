@@ -93,19 +93,19 @@ contract Campaign is
         public
         onlyOwner()
     {
-        // Hold this in memory
-        uint tokenBalance = tokenBalanceOf(this);
-
         // @imp 5 If minimum influence is not exceeded, return the tokens to the owner
         if (totalInfluence <= minimumInfluence)
-            // This allows the next part to continue
-            tokenTransfer(owner, tokenBalance);
-
-        // @imp 6 In case there are straggling tokens left (must be less than 1e-7%)
-        require(tokenBalance < bounty / 10**9);
-        // NOTE: Remainder (which is very small) is destroyed
-        //       This is done to ensure imprecise calculations cannot stop this
-
+        {
+            // The owner has all tokens now, balance is zero
+            tokenTransfer(owner, tokenBalanceOf(this));
+        }
+        else
+        {
+            // @imp 6 In case there are straggling tokens left (must be less than 1e-7%)
+            require(tokenBalanceOf(this) * 10**9 < bounty);
+            // NOTE: Remainder (which is very small) is destroyed
+            //       This is done to ensure imprecise calculations cannot stop this
+        }
         // @imp 5,6 Only remove contract if all tokens are claimed
         selfdestruct(owner);
     }
