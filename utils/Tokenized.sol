@@ -33,17 +33,34 @@ contract Tokenized is Maintained
     }
 
     // @imp 3 Safe calls of ERC20 methods
+    function tokenTotalSupply()
+        internal
+        view
+        returns (
+            uint256
+        )
+    {
+        return token.totalSupply();
+    }
+
+    // @imp 3 Safe calls of ERC20 methods
     function tokenBalanceOf(address account)
-        internal constant
-        returns (uint256)
+        internal
+        view
+        returns (
+            uint256
+        )
     {
         return token.balanceOf(account);
     }
 
     // @imp 3 Safe calls of ERC20 methods
     function tokenAllowance(address account, address spender)
-        internal constant
-        returns (uint256)
+        internal
+        view
+        returns (
+            uint256
+        )
     {
         return token.allowance(account, spender);
     }
@@ -83,16 +100,32 @@ contract TestTokenized is Tokenized
         Tokenized(_token)
     { }
     
+    function totalSupply()
+        public
+        view
+        returns (
+            uint256
+        )
+    {
+        return tokenTotalSupply();
+    }
+
     function balanceOf(address account)
-        public constant
-        returns (uint256)
+        public
+        view
+        returns (
+            uint256
+        )
     {
         return tokenBalanceOf(account);
     }
     
     function allowance(address account, address spender)
-        public constant
-        returns (uint256)
+        public
+        view
+        returns (
+            uint256
+        )
     {
         return tokenAllowance(account, spender);
     }
