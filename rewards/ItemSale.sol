@@ -156,12 +156,9 @@ contract ItemSale is
     // May have to withdrawl multiple times not to exhaust block gas usage
     function getReward()
         public
-        returns (
-            bool allClaimed // Communicate that everything is claimed
-        )
     {
         // Check that there is work to do now before we do any further processing
-        require(claimIndex[msg.sender] < salesStack.length);
+        require(claimsLeft(msg.sender) > 0);
 
         // i@imp 7 Loop over unchecked dispersements and accrue payout amount
         // NOTE: Will stop when we reached location of currently logged data
@@ -188,11 +185,27 @@ contract ItemSale is
             claimIndex[msg.sender] = i+1;
         }
 
-        // @imp 8 Give the person their tokens
-        if (amount > 0) tokenTransfer(msg.sender, amount);
-        unclaimed -= amount;
-        // @imp 8 We've claimed everything if we're up to date on the stack
-        return (claimIndex[msg.sender] == salesStack.length);
+        // @imp 8 Give the person their tokens if they've earned any
+        if (amount > 0) // Also protects against re-entrancy a bit
+        {
+            tokenTransfer(msg.sender, amount);
+            unclaimed -= amount;
+        }
+    }
+
+    // NOTE: Testing shows 98k gas for 1 claim,
+    //       +15k for each one after that.
+    //       This is about 0.08 ETH for 100 claims @ 50gwei gasprice
+    //       This is about 0.0012 ETH for 10 claims @ 5gwei gasprice
+    function claimsLeft (
+        address _claimer
+    )
+        public
+        view
+        returns (uint)
+    {
+        // @imp 8 Helper, returns number of claims left on stack
+        return salesStack.length - claimIndex[_claimer];
     }
 
     // @imp 9 Withdraw unlocked tokens at any time
@@ -210,14 +223,17 @@ contract ItemSale is
         public
         onlyOwner()
     {
+        // Hold this in memory
+        uint tokenBalance = tokenBalanceOf(this);
+
         // NOTE: Less than 1e-7% of the contract's balance is unclaimed
         //       This ensures imprecision cannot prevent this from working
         // NOTE: Potential attack vector for Owner is to fund this with
         //       significantly more tokens, then call this method.
         //       The response to this is that such actors would be noticed
         //       and suffer a reputational decline as a result.
-        require(unclaimed * 10**9 < tokenBalanceOf(this));
-        tokenTransfer(owner, tokenBalanceOf(this));
+        require(unclaimed * 10**9 <= tokenBalance);
+        if (tokenBalance > 0) tokenTransfer(owner, tokenBalance);
         selfdestruct(owner);
     }
 }
