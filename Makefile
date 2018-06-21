@@ -16,7 +16,7 @@ SOLC_OUTPUT_FORMAT=--combined-json $(subst $(space),$(comma),$(SOLC_OUTPUTS))
 
 SOLC_FLAGS=$(SOLC_REMAPPINGS) $(SOLC_OUTPUT_FORMAT)
 
-SOLC_TARGETS =$(shell echo rewards/*.sol)
+SOLC_TARGETS =$(shell echo campaigns/*.sol)
 SOLC_TARGETS+=$(shell echo ico/*.sol)
 contracts.json: $(SOLC_TARGETS)
 	$(SOLC) $(SOLC_FLAGS) $^ > $@

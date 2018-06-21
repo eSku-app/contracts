@@ -1,7 +1,7 @@
 pragma solidity ^0.4.24;
 pragma experimental ABIEncoderV2; // Used for setReward(), addInfluence() functions
 /*
- * ItemSale reward contract - Reward users for continuous sales promotions
+ * Item Sale Campaign contract - Reward users for continuous sales promotions
  *
  * Reward contract is owned by a brand who sets it up and allocates
  * the correct amount of tokens (via transfer()) to the contract
@@ -37,7 +37,7 @@ import "utils/Maintained.sol";
 import "utils/Tokenized.sol";
 import "platform/Influenced.sol";
 
-contract ItemSale is
+contract ItemSaleCampaign is
     Owned,      // by a Brand, @imp 1 Sets Owner to deployer
     Maintained, // by eSKU
     Tokenized,  // with eSKU token

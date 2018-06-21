@@ -1,6 +1,6 @@
 pragma solidity ^0.4.24;
 /*
- * Campaign reward contract - Pay users for a promotional campaign
+ * Timebound Campaign contract - Pay users for a timebound campaign
  *
  * This reward contract is owned by a brand who sets it up and
  * allocates the correct amount of tokens (via transfer()) to the
@@ -28,7 +28,7 @@ import "utils/TimeLimited.sol";
 import "utils/Tokenized.sol";
 import "platform/Influenced.sol";
 
-contract Campaign is
+contract TimeboundCampaign is
     Owned,      // by a Brand @imp 1
     TimeLimited,// by given duration
     Tokenized,  // with eSKU token
