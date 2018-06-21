@@ -216,7 +216,7 @@ contract ItemSale is
         //       significantly more tokens, then call this method.
         //       The response to this is that such actors would be noticed
         //       and suffer a reputational decline as a result.
-        require(unclaimed < tokenBalanceOf(this) / 10**9);
+        require(unclaimed * 10**9 < tokenBalanceOf(this));
         tokenTransfer(owner, tokenBalanceOf(this));
         selfdestruct(owner);
     }
