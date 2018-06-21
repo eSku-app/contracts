@@ -39,6 +39,15 @@ contract GoalOrientedCampaign is
     // @imp 7 Goal progress starts at 0
     uint public progress = 0;
 
+    constructor (
+        address _token,
+        uint _duration,
+        uint _minimumInfluence
+    )
+        public
+        TimeboundCampaign(_token, _duration, _minimumInfluence)
+    { }
+
     function addProgress(
         uint newProgress
     )
