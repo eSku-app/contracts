@@ -84,19 +84,11 @@ contract TestTimeLimited is TimeLimited
         TimeLimited(_duration)
     { }
 
-    function alive()
-        public
-        view
-        inProgress()
-        returns (bool)
-    {
-        return true;
-    }
-
     function destroy()
         public
         expired()
     {
+        require(finished);
         selfdestruct(msg.sender);
     }
 }
